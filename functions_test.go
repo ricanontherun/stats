@@ -58,3 +58,27 @@ func TestVariance(t * testing.T) {
 		}
 	}
 }
+
+func TestCovariance(t * testing.T) {
+	// Run through some test cases
+	cases := []struct {
+		in []Point
+		expected float64
+	}{
+		{[]Point{Point{1.0, 2.0}}, 0.0},
+		{[]Point{
+			Point{X:10.0, Y:11.0},
+			Point{X:100.0, Y:101.0},
+			Point{X:1.0, Y:2.0},
+			Point{X:20.0, Y:21.0},
+		}, 1552.6875},
+	}
+
+	for _, test_case := range cases {
+		covariance := Covariance(test_case.in)
+
+		if ( math.Ceil(covariance) != math.Ceil(test_case.expected) ) {
+			t.Errorf("Covariance(%v) == %v, expected %v", test_case.in, covariance, test_case.expected)
+		}
+	}
+}

@@ -76,6 +76,7 @@ func getYData(points []Point) ([]float64) {
 	return y_array
 }
 
+// Calculate the covariance for a set of (x,y) points
 func Covariance(points []Point) float64 {
 	num := len(points)
 	sum := 0.0
@@ -91,5 +92,5 @@ func Covariance(points []Point) float64 {
 		sum += (point.X - x_mean) * (point.Y - y_mean)
 	}
 
-	return sum / float64(num - 1)
+	return sum / float64(num)
 }

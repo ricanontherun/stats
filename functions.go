@@ -1,6 +1,7 @@
 package stats
 
 import "math"
+import "errors"
 
 type Point struct {
 	X float64
@@ -24,9 +25,15 @@ func Mean(numbers []float64) float64 {
 }
 
 // Calculate the variance of a set of numbers
-func Variance(numbers []float64) float64 {
-	var mean = Mean(numbers)
-	var differences = make([]float64, len(numbers))
+func Variance(numbers []float64) (float64, error) {
+	num := len(numbers)
+
+	if ( num < 2 ) {
+		return 0.0, errors.New("Variance takes at least two numbers")
+	}
+
+	mean := Mean(numbers)
+	differences := make([]float64, len(numbers))
 
 	// Calculate the squared differences of the numbers.
 	for i, number := range numbers {
@@ -34,11 +41,17 @@ func Variance(numbers []float64) float64 {
 	}
 
 	// Return the mean of those squared numbers.
-	return Mean(differences)
+	return Mean(differences), nil
 }
 
-func StandardDeviation(numbers []float64) float64 {
-	return math.Sqrt(Variance(numbers))
+func StandardDeviation(numbers []float64) (float64, error) {
+	variance, err := Variance(numbers)
+
+	if err != nil {
+		return 0.0, err
+	}
+
+	return math.Sqrt(variance), nil
 }
 
 func getXData(points []Point) ([]float64) {
@@ -64,14 +77,19 @@ func getYData(points []Point) ([]float64) {
 }
 
 func Covariance(points []Point) float64 {
+	num := len(points)
+	sum := 0.0
+
+	if num == 0 {
+		return sum
+	}
+
 	x_mean := Mean(getXData(points))
 	y_mean := Mean(getYData(points))
-
-	sum := 0.0
 
 	for _, point := range points {
 		sum += (point.X - x_mean) * (point.Y - y_mean)
 	}
 
-	return sum / float64(len(points) - 1)
+	return sum / float64(num - 1)
 }
